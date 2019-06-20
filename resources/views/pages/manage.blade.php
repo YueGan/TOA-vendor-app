@@ -1,6 +1,6 @@
-@extends('layouts.main')
+@extends('layouts.app')
 @section('content')
-	<div class="container">
+	<div class="card">
 	@if(count($products) > 0)
 		@each('partials.product', $products, 'product')
 	@else

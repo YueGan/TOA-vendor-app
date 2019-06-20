@@ -1,3 +1,4 @@
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.js"></script>
+<!-- Scripts -->
+<script src="{{ asset('js/app.js') }}" defer></script>
+
 @stack('scripts')

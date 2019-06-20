@@ -12,12 +12,16 @@
 */
 
 Route::get('/', function () {
-    return view('pages.home');
+    return redirect('/orders/create');
 });
-
-Route::get('orders', function () {
-    return view('pages.orders');
-}); 
 
 
 Route::resource('products', 'ProductsController');
+Route::resource('orders', 'OrdersController');
+
+Route::get('/completed', 'CompletedOrdersController@index');
+Route::get('/archived', 'ArchivedOrdersController@index');
+
+Auth::routes();
+
+Route::get('/dashboard', 'DashboardController@index'); 

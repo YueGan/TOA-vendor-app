@@ -4,9 +4,20 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Product;
+use Illuminate\Support\Facades\Storage;
 
 class ProductsController extends Controller
 {
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth', ['except' => ['index', 'show']]);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -39,14 +50,33 @@ class ProductsController extends Controller
         $this->validate($request, [
             'name_zh' => "required",
             'name_en' => "required",
-            'price' => "required|numeric"
+            'price' => "required|numeric",
+            'cover_image' => 'image|nullable|max:1999'
         ]);
+
+        // Handle File Upload
+        if($request->hasFile('cover_image')){
+            // Get filename with the extension
+            $fileNameWithExt = $request->file('cover_image')->getClientOriginalName();
+            // Get just filename
+            $filename = pathinfo($fileNameWithExt, PATHINFO_FILENAME);
+            // Get just ext
+            $extension = $request->file('cover_image')->getClientOriginalExtension();
+            // Filename to store
+            $fileNameToStore = $filename."_".time().'.'.$extension;
+            // Upload Image 
+            $path = $request->file('cover_image')->storeAs('public/cover_images', $fileNameToStore);
+        }
+        else{
+            $fileNameToStore = "noimage.jpg";
+        }
 
         $product = new Product;
         $product->name_zh = $request->input('name_zh');
         $product->name_en = $request->input('name_en');
         $product->price = $request->input('price');
-
+        $product->updated_by = auth()->user()->id ?? 0;
+        $product->cover_image = $fileNameToStore;
         $product->save();
 
         return redirect('/products')->with('success', 'Product Created');
@@ -74,6 +104,10 @@ class ProductsController extends Controller
     public function edit($id)
     {
         $product = Product::find($id);
+        // check for correct user
+        // if(auth()->user()->id != $product->updated_by){
+        //     return redirect('products')->with('error', "Unauthorized page");
+        // }
         return view('products.edit')->with('product', $product);
     }
 
@@ -96,7 +130,7 @@ class ProductsController extends Controller
         $product->name_zh = $request->input('name_zh');
         $product->name_en = $request->input('name_en');
         $product->price = $request->input('price');
-
+        $product->updated_by = auth()->user()->id ?? 0;
         $product->save();
 
         return redirect('/products')->with('success', 'Product Updated');
@@ -111,6 +145,10 @@ class ProductsController extends Controller
     public function destroy($id)
     {
         $product = Product::find($id);
+        if($product->cover_image != 'noimage.jpg'){
+            // Delete Image
+            Storage::delete('public/cover_images/'.$product->cover_image);
+        }
         $product->delete();
         return redirect('/products')->with('success', 'Product Removed');   
     }
