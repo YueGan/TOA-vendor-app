@@ -19,7 +19,7 @@ class CompletedOrdersController extends Controller
     public function index()
     {
         $orders = Order::where('status', 1)->with('products')->orderBy('id', 'asc')->paginate(10);
-        $status = "Completed Orders";
+        $status = "已完成订单";
         return view('orders.index', compact('orders', 'status'));
     }
 

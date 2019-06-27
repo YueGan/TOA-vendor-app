@@ -19,6 +19,10 @@ Route::get('/', function () {
 Route::resource('products', 'ProductsController');
 Route::resource('orders', 'OrdersController');
 
+Route::get('/orders/toArchive/{id}', 'OrdersController@toArchive')->name('orders.toArchive');
+Route::get('/orders/toComplete/{id}', 'OrdersController@toComplete')->name('orders.toComplete');
+Route::get('/orders/toNew/{id}', 'OrdersController@toNew')->name('orders.toNew');
+
 Route::get('/completed', 'CompletedOrdersController@index');
 Route::get('/archived', 'ArchivedOrdersController@index');
 

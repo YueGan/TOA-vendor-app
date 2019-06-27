@@ -19,7 +19,7 @@ class ArchivedOrdersController extends Controller
     public function index()
     {
         $orders = Order::where('status', 2)->with('products')->orderBy('id', 'asc')->paginate(10);
-        $status = "Archived Orders";
+        $status = "已删除订单";
         return view('orders.index', compact('orders', 'status'));
     }
 

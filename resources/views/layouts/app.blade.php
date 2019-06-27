@@ -17,7 +17,7 @@
         
     </div>
     <footer>
-        @include('partials.footer')
+        {{-- @include('partials.footer') --}}
     </footer>
     
     {{-- JS --}}
